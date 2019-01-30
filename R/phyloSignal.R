@@ -95,6 +95,8 @@ phyloSignal <- function(p4d, methods = c("all", "I", "Cmean", "Lambda", "K", "K.
       tmp <- apply(X, 2, lambdaTest, vcv = VCV)
       res$stat$Lambda <- unlist(sapply(tmp, "[", 1))
       res$pvalue$Lambda <- unlist(sapply(tmp, "[", 2))
+      res$Lambda.logL <- unlist(sapply(tmp, "[", 3))
+      res$Lambda.logL0 <- unlist(sapply(tmp, "[", 4))
       res$pvalue$Lambda <- ifelse(res$pvalue$Lambda < 1/(reps + 1), 1/(reps + 1), res$pvalue$Lambda)
     }
   }
@@ -122,7 +124,7 @@ lambdaTest <- function(x, vcv){
   logL0 <- pagelLogLik(0, x, vcv)
   pvalue <- as.numeric(pchisq(2 * (opt$objective - logL0), df = 1, lower.tail = FALSE))
 
-  return(list(Lambda = Lambda, pvalue = pvalue))
+  return(list(Lambda = Lambda, pvalue = pvalue, logL = opt$objective, logL0 = logL0))
 }
 
 
